@@ -25,7 +25,8 @@ def reset_game():
     st.session_state.is_ended = False
 
 @st.dialog("📊 สรุปผลการเล่นเกม")
-def show_result_dialog(ans1, ans2, ans3, ans4):
+# แก้ไข: เพิ่ม ans5 เข้ามาใน arguments
+def show_result_dialog(ans1, ans2, ans3, ans4, ans5):
     st.balloons()
     score = 0
 
@@ -33,7 +34,8 @@ def show_result_dialog(ans1, ans2, ans3, ans4):
     u_ans2 = ans2.strip().lower()
     u_ans3 = ans3.strip().lower()
     u_ans4 = ans4.strip().lower()
-    u_ans5 = ans5.strip().lower()
+    # แก้ไข: เปลี่ยนเป็น .upper() เพื่อให้เช็คกับ "CAT" ได้ หรือถ้าอยากบังคับพิมพ์ใหญ่เท่านั้นให้ใช้ ans5.strip()
+    u_ans5 = ans5.strip().upper()
 
     if u_ans1 == "คณิตศาสตร์":
         st.success("✅ ข้อ 1: ถูกต้อง")
@@ -63,19 +65,20 @@ def show_result_dialog(ans1, ans2, ans3, ans4):
         st.success("✅ ข้อ 5: ถูกต้อง")
         score += 1
     else:
-        st.error(f"❌ ข้อ 5: ยังไม่ถูกต้อง (คุณตอบ '{u_ans5}')")
+        # แสดงค่าดั้งเดิมที่ user พิมพ์ (ans5.strip()) เพื่อให้เห็นว่าเขาพิมพ์อะไรมา
+        st.error(f"❌ ข้อ 5: ยังไม่ถูกต้อง (คุณตอบ '{ans5.strip()}')")
 
-    # แก้ไข: จัดย่อหน้าให้อยู่ในฟังก์ชัน
-   st.info(f"🏆 ได้คะแนนรวม: {score} คะแนน")
+    # แก้ไข: จัดย่อหน้าให้ถูกต้อง
+    st.info(f"🏆 ได้คะแนนรวม: {score} คะแนน")
 
     if score == 5:
-      st.success("🎉 ระดับราชา")
+        st.success("🎉 ระดับราชา")
     elif score >= 3:
-      st.warning("😎 เอาใหม่ ๆ ราชาไม่มีวันยอมแพ้")
+        st.warning("😎 เอาใหม่ ๆ ราชาไม่มีวันยอมแพ้")
     elif score >= 1:
-      st.error("😅 ไม่ได้ครึ่งของราชา")
+        st.error("😅 ไม่ได้ครึ่งของราชา")
     else:
-      st.error("💀 กระจอกชะมัด")
+        st.error("💀 กระจอกชะมัด")
 
 # ปุ่มเริ่มเกม
 st.button("🎮 เริ่มเล่นเกม / เริ่มใหม่", on_click=reset_game)
@@ -109,9 +112,9 @@ ans4 = st.text_input(
     "ข้อ 4: วิชาอะไรที่ต้องยืดเส้นสายก่อนเรียน?",
     value=st.session_state.ans4_val,
 )
+# แก้ไข: เอาการกด Enter (บรรทัดใหม่) ออกจาก String 
 ans5 = st.text_input(
-    "ข้อ 5: แมว ภาษาอังกฤษสะกดอย่างไร? (สะกดด้วยตัวพิมพ์ใหญ่)
-",
+    "ข้อ 5: แมว ภาษาอังกฤษสะกดอย่างไร? (สะกดด้วยตัวพิมพ์ใหญ่)",
     value=st.session_state.ans5_val,
 )
 
@@ -120,7 +123,6 @@ st.session_state.ans2_val = ans2
 st.session_state.ans3_val = ans3
 st.session_state.ans4_val = ans4
 st.session_state.ans5_val = ans5
-
 
 # 5. ปุ่มส่งคำตอบ และ Loop วนเวลา
 if "start" in st.session_state and not st.session_state.get("is_ended", False):
